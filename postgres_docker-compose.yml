@@ -1,0 +1,20 @@
+version: "3.8"
+name: "course_planner"
+services:
+  cp_postgresql:
+    container_name: cp_postgresql
+    image: postgres:15.2-alpine
+    restart: "no"
+    environment:
+      - POSTGRES_USER=cp_service
+      - POSTGRES_PASSWORD==PM8cT?hO|5BljNJgMr9%+-7(j5.!IgZ
+      - POSTGRES_DB=cp_order_payment_db
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local

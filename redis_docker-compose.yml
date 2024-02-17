@@ -1,0 +1,20 @@
+version: '3.8'
+name: 'course_planner'
+services:
+  redis-master:
+    container_name: cp_redis-master
+    restart: 'no'
+    image: redis:latest
+    command: redis-server --port 6379
+    ports:
+      - "6379:6379"
+    volumes:
+      - .:/app
+
+  redis-slave:
+    container_name: cp_redis-slave
+    restart: 'no'
+    image: redis:latest
+    command: redis-server --slaveof redis-master 6379
+    volumes:
+       - .:/app
