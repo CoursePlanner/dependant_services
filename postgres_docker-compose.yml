@@ -3,7 +3,7 @@ name: "course_planner"
 services:
   cp_postgresql:
     container_name: cp_postgresql
-    image: postgres:15.2-alpine
+    image: postgres:16.2-alpine
     restart: "no"
     environment:
       - POSTGRES_USER=cp_service
