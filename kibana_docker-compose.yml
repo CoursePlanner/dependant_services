@@ -1,0 +1,35 @@
+# Once the containers are created
+# Execute: "./bin/elasticsearch-setup-passwords auto" inside Elasticsearch container
+# This would generate password for all users, then copy the password and update kibana.yml or the env variable for Kibana accordingly
+# Default username is kibana_system
+# For a specific user: ./bin/elasticsearch-reset-password -u <username> -i <password>
+# Ex: ./bin/elasticsearch-reset-password -u kibana_system -i changeme
+version: "3.8"
+name: "course_planner"
+services:
+  cp_elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:8.12.2"
+    container_name: cp_elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      # ELASTIC_USERNAME: kibana_system
+      ELASTIC_PASSWORD: changeme
+      # KIBANA_PASSWORD: changeme
+      # KIBANA_PORT: 5601
+    restart: "no"
+    volumes:
+      - ./configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  cp_kibana:
+    depends_on:
+      - cp_elasticsearch
+    image: "docker.elastic.co/kibana/kibana:8.12.2"
+    container_name: cp_kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: changeme
+    restart: "no"
+    volumes:
+      - ./configs/kibana.yml:/usr/share/kibana/config/kibana.yml

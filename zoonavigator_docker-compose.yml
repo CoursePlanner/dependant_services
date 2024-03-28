@@ -1,0 +1,11 @@
+version: "3.8"
+name: "course_planner"
+services:
+  cp_zoonavigator:
+    image: "elkozmon/zoonavigator:latest"
+    # command: ["start-dev"]
+    container_name: cp_zoonavigator
+    ports:
+      - "9000:9000"
+    # environment:
+    restart: "no"
