@@ -4,11 +4,15 @@
 # Default username is kibana_system
 # For a specific user: ./bin/elasticsearch-reset-password -u <username> -i <password>
 # Ex: ./bin/elasticsearch-reset-password -u kibana_system -i changeme
+# Once the password is updated, restart the Kibana container to login
+# Kibana container's default credentials are elastic:changeme
 version: "3.8"
 name: "course_planner"
 services:
   cp_elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:8.12.2"
+    depends_on:
+      - cp_logstash
+    image: "docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}"
     container_name: cp_elasticsearch
     ports:
       - "9200:9200"
@@ -17,19 +21,35 @@ services:
       ELASTIC_PASSWORD: changeme
       # KIBANA_PASSWORD: changeme
       # KIBANA_PORT: 5601
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     restart: "no"
     volumes:
-      - ./configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elk_configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
   cp_kibana:
     depends_on:
       - cp_elasticsearch
-    image: "docker.elastic.co/kibana/kibana:8.12.2"
+    image: "docker.elastic.co/kibana/kibana:${STACK_VERSION}"
     container_name: cp_kibana
     ports:
       - "5601:5601"
     environment:
       ELASTICSEARCH_USERNAME: kibana_system
       ELASTICSEARCH_PASSWORD: changeme
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     restart: "no"
     volumes:
-      - ./configs/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./elk_configs/kibana.yml:/usr/share/kibana/config/kibana.yml
+  cp_logstash:
+    image: "docker.elastic.co/logstash/logstash:${STACK_VERSION}"
+    container_name: cp_logstash
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    restart: "no"
+    volumes:
+      - ./elk_configs/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./elk_configs/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - /logs:/var/logs:rw
