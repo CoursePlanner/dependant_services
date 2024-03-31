@@ -3,15 +3,13 @@
 # This would generate password for all users, then copy the password and update kibana.yml or the env variable for Kibana accordingly
 # Default username is kibana_system
 # For a specific user: ./bin/elasticsearch-reset-password -u <username> -i <password>
-# Ex: ./bin/elasticsearch-reset-password -u kibana_system -i changeme
+# Ex: { echo y; echo changeme; echo changeme; } | ./bin/elasticsearch-reset-password -u kibana_system -i
 # Once the password is updated, restart the Kibana container to login
 # Kibana container's default credentials are elastic:changeme
 version: "3.8"
 name: "course_planner"
 services:
   cp_elasticsearch:
-    depends_on:
-      - cp_logstash
     image: "docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}"
     container_name: cp_elasticsearch
     ports:
@@ -40,6 +38,8 @@ services:
     volumes:
       - ./elk_configs/kibana.yml:/usr/share/kibana/config/kibana.yml
   cp_logstash:
+    depends_on:
+      - cp_elasticsearch
     image: "docker.elastic.co/logstash/logstash:${STACK_VERSION}"
     container_name: cp_logstash
     ports:
@@ -52,4 +52,4 @@ services:
     volumes:
       - ./elk_configs/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./elk_configs/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-      - /logs:/var/logs:rw
+      - ./logs:/var/logs:rw
