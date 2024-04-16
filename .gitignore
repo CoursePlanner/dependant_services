@@ -1,3 +1,5 @@
 .env
 ./logs/
 **/thumbs.db
+/logs/**
+**/*.log
