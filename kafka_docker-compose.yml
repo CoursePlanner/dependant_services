@@ -10,16 +10,16 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     restart: "no"
-  cp_zoonavigator:
-    depends_on:
-      - cp_zookeeper
-    image: "elkozmon/zoonavigator:latest"
-    # command: ["start-dev"]
-    container_name: cp_zoonavigator
-    ports:
-      - "9000:9000"
-    # environment:
-    restart: "no"
+  # cp_zoonavigator:
+  #   depends_on:
+  #     - cp_zookeeper
+  #   image: "elkozmon/zoonavigator:latest"
+  #   # command: ["start-dev"]
+  #   container_name: cp_zoonavigator
+  #   ports:
+  #     - "9000:9000"
+  #   # environment:
+  #   restart: "no"
   cp_kafka:
     image: "confluentinc/cp-kafka:7.3.3"
     container_name: cp_kafka
