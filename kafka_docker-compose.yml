@@ -1,3 +1,10 @@
+# Create topics below:
+# kafka-topics --topic "cp-order-payment-update" --create --partitions 3 --replication-factor 1 --bootstrap-server 0.0.0.0:9092
+# kafka-topics --topic "cp-update-inventory" --create --partitions 3 --replication-factor 1 --bootstrap-server 0.0.0.0:9092
+# kafka-topics --topic "cp-add-user-to-group" --create --partitions 3 --replication-factor 1 --bootstrap-server 0.0.0.0:9092
+
+# Console producer: docker exec -it <CONTAINER_ID> kafka-console-producer --topic <TOPIC> --bootstrap-server 0.0.0.0:9092
+
 version: "3.8"
 name: "course_planner"
 services:
@@ -10,6 +17,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     restart: "no"
+    expose:
+      - 2181
   # cp_zoonavigator:
   #   depends_on:
   #     - cp_zookeeper
@@ -31,8 +40,10 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "cp_zookeeper:2181"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://host.docker.internal:9092,PLAINTEXT_INTERNAL://broker:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     restart: "no"
+    expose:
+      - 9092
